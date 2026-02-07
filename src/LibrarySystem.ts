@@ -9,33 +9,83 @@
 
 enum BookGenre {
   Fantasy,
-  // add 4 more
+  ScienceFiction,
+  Mystery,
+  Romance,
+  NonFiction
 }
 
 type Book = {
+  bookId:number;
+  title:string;
+  author:string;
+  genre:BookGenre;
+  isAvailable:boolean;
 
 }
-
+// 3. Create a function called addBook which will add a new book into the library array. The function needs to return a Book object.
 let library: Book[] = [];
 
-function addBook(bookId, title, author, genre) {
+function addBook(bookId:number, title:string, author:string, genre:BookGenre): Book {
+  const newBook: Book = {
+    bookId,
+    title,
+    author,
+    genre,
+    isAvailable: true
+  };
 
+  library.push(newBook);
+  return newBook;
 }
 
-function borrowBook(bookId) {
+function borrowBook(bookId:number): string {
+  const book = library.find(b => b.bookId === bookId);
+  if (!book) {
+    return `Book with ID ${bookId} does not exist.`;
+  }
 
+  if (!book.isAvailable) {
+    return `${book.title} is not available.`;
+  }
+
+  book.isAvailable = false;
+  return `${book.title} has been borrowed`;
+}
+// 5. Create a function called returnBook which will change the book’s availability to true. The return needs to be a string.
+function returnBook(bookId:number): string {
+  const book = library.find(b => b.bookId === bookId);
+  if (!book) {
+    return `Book with ID ${bookId} does not exist.`;
+  }
+
+  if (book.isAvailable) {
+    return `${book.title} is already available.`;
+  }
+
+  book.isAvailable = true;
+  return `${book.title} has been returned`;
 }
 
-function returnBook(bookId) {
+// 6. Create a function called checkAvailability which will return true if the book is available and false otherwise.
 
+function checkAvailability(bookId:number): boolean {
+  const book = library.find(b => b.bookId === bookId);
+  if (!book) {
+    throw new Error(`Book with ID ${bookId} does not exist.`);
+  }
+
+  return book.isAvailable;
 }
 
-function checkAvailability(bookId) {
+function removeBook(bookId:number): string {
+  const bookIndex = library.findIndex(b => b.bookId === bookId);
+  if (bookIndex === -1) {
+    return `Book with ID ${bookId} does not exist.`;
+  }
 
-}
-
-function removeBook(bookId) {
-
+  library.splice(bookIndex, 1);
+  return `Book with ID ${bookId} has been removed from the library`;
 }
 
 // Test cases (Create more if needed)

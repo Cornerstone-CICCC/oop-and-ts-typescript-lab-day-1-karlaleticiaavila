@@ -8,28 +8,61 @@
 
 enum MovieGenre {
   Action,
-  // add 4 more
+  Comedy,
+  Drama,
+  Horror,
+  Mystery
 }
+// 2. Create a tuple type called Seat which holds (rowLetter: string, seatNumber: number).
+type Seat = [rowLetter: string, seatNumber: number]
 
-type Seat = [string, number]
-
+// 3. Create a type alias called Movie which contains: movieId (number), title (string), genre (MovieGenre), availableSeats (Seat[]).
 type Movie = {
-
+  movieId: number;
+  title: string;
+  genre: MovieGenre;
+  availableSeats: Seat[];
 }
 
 let movies: Movie[] = [];
 
-function addMovie(movieId, title, genre, availableSeats) {
+function addMovie(movieId: number, title: string, genre: MovieGenre, availableSeats: Seat[]): Movie {
+  const newMovie: Movie = {
+    movieId,
+    title,
+    genre,
+    availableSeats
+  };
 
+  movies.push(newMovie);
+  return newMovie;
+}
+// 5. Create a function called bookSeat which removes a seat from availableSeats if available. The return needs to be a string.
+function bookSeat(movieId: number, rowLetter: string, seatNumber: number): string {
+  const movie = movies.find(m => m.movieId === movieId);
+  if (!movie) {
+    return `Movie with ID ${movieId} does not exist.`;
+  }
+
+  const seatIndex = movie.availableSeats.findIndex(seat => seat[0] === rowLetter && seat[1] === seatNumber);
+  if (seatIndex === -1) {
+    return `Seat ${rowLetter}${seatNumber} is not available.`;
+  }
+
+  movie.availableSeats.splice(seatIndex, 1);
+  return `Seat ${rowLetter}${seatNumber} booked successfully`;
 }
 
-function bookSeat(movieId, rowLetter, seatNumber) {
+function checkSeatAvailability(movieId: number, rowLetter: string, seatNumber: number): boolean {
+  const movie = movies.find(m => m.movieId === movieId);
+  if (!movie) {
+    throw new Error(`Movie with ID ${movieId} does not exist.`);
+  }
 
+  return movie.availableSeats.some(seat => seat[0] === rowLetter && seat[1] === seatNumber);
 }
 
-function checkSeatAvailability(movieId, rowLetter, seatNumber) {
 
-}
 
 // Test cases (Create more if needed)
 console.log(addMovie(1, "Avengers", MovieGenre.Action, [["A", 1], ["A", 2]])) // { movieId: 1, title: "Avengers", genre: MovieGenre.Action, availableSeats: [["A", 1], ["A", 2]] }
